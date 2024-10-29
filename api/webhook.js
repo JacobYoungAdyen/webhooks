@@ -8,7 +8,9 @@ module.exports = async (req, res) => {
       const { webhookType, data } = req.body;
       const webhook = new Webhook({ webhookType, data });
       await webhook.save();
-      res.status(200).json({ message: 'Webhook stored successfully' });
+
+      // Respond with a 200 status and JSON body of ["accepted"]
+      res.status(200).json(["accepted"]);
     } catch (error) {
       res.status(500).json({ error: 'Error storing webhook' });
     }
