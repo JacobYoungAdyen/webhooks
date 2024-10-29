@@ -1,0 +1,18 @@
+const db = require('../lib/db');
+const Webhook = require('../models/Webhook');
+
+module.exports = async (req, res) => {
+  await db;
+  if (req.method === 'POST') {
+    try {
+      const { webhookType, data } = req.body;
+      const webhook = new Webhook({ webhookType, data });
+      await webhook.save();
+      res.status(200).json({ message: 'Webhook stored successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Error storing webhook' });
+    }
+  } else {
+    res.status(405).json({ message: 'Method not allowed' });
+  }
+};

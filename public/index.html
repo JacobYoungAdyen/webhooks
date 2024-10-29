@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Viewer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; }
+        input { margin: 5px 0; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Webhook Viewer</h1>
+    <label for="type">Filter by Type:</label>
+    <input type="text" id="type" placeholder="Webhook Type" oninput="filterWebhooks()">
+    <label for="data">Filter by Data:</label>
+    <input type="text" id="data" placeholder="Data" oninput="filterWebhooks()">
+
+    <table id="webhookTable">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Data</th>
+                <th>Received At</th>
+            </tr>
+        </thead>
+        <tbody id="webhookBody">
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchWebhooks() {
+            const response = await fetch('/api/webhooks');
+            const webhooks = await response.json();
+            displayWebhooks(webhooks);
+        }
+
+        function displayWebhooks(webhooks) {
+            const tableBody = document.getElementById('webhookBody');
+            tableBody.innerHTML = '';
+            webhooks.forEach(webhook => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${webhook.webhookType}</td>
+                    <td>${JSON.stringify(webhook.data)}</td>
+                    <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function filterWebhooks() {
+            const typeFilter = document.getElementById('type').value;
+            const dataFilter = document.getElementById('data').value;
+
+            const response = await fetch(`/api/webhooks?type=${typeFilter}&data=${dataFilter}`);
+            const filteredWebhooks = await response.json();
+            displayWebhooks(filteredWebhooks);
+        }
+
+        fetchWebhooks();
+    </script>
+</body>
+</html>
