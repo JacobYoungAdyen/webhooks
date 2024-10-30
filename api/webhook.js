@@ -6,6 +6,8 @@ module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
       const { webhookType, data } = req.body;
+      const { webhookDetails } = data.notificationItems[0].NotificationRequestItem
+      console.log("webhook details", webhookDetails)
       console.log("request body", req.body)
       console.log("full request", req)
       const webhook = new Webhook({ webhookType, data });
