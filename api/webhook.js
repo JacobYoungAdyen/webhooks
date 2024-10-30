@@ -6,6 +6,8 @@ module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
       const { webhookType, data } = req.body;
+      console.log("request body", req.body)
+      console.log("full request", req)
       const webhook = new Webhook({ webhookType, data });
       await webhook.save();
 
