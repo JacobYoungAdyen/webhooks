@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 
 const webhookSchema = new mongoose.Schema({
-  webhookType: String,
-  data: { type: Object },
+  live: String,
+  notificationItem: { type: Object }, // Stores the extracted NotificationRequestItem object
   receivedAt: { type: Date, default: Date.now },
 });
 
