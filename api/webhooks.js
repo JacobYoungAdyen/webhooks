@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
     if (type) query.webhookType = new RegExp(type, 'i');
     if (data) query.data = new RegExp(data, 'i');
 
-    const webhooks = await Webhook.find(query);
+    const webhooks = await Webhook.find(query).sort({ receivedAt: -1 });
     res.status(200).json(webhooks);
   } catch (error) {
     res.status(500).json({ error: 'Error retrieving webhooks' });
