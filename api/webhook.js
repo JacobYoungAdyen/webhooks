@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
       // Extract the NotificationRequestItem object
       const notificationRequestItem = notificationItems[0]?.NotificationRequestItem;
 
-      console.log(notificationRequestItem)
+      console.log('webhook body', notificationRequestItem)
 
       // Define the data to store, including both the main properties and the extracted item
       const webhookData = {
