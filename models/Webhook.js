@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const webhookSchema = new mongoose.Schema({
   webhookType: String,
-  data: Object,
+  data: { type: Object },
   receivedAt: { type: Date, default: Date.now },
 });
 

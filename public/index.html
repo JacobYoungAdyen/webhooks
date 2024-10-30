@@ -1,17 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webhook Viewer</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f2f2f2; }
-        input { margin: 5px 0; padding: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input {
+            margin: 5px 0;
+            padding: 5px;
+        }
     </style>
 </head>
+
 <body>
     <h1>Webhook Viewer</h1>
     <label for="type">Filter by Type:</label>
@@ -41,13 +63,16 @@
         function displayWebhooks(webhooks) {
             const tableBody = document.getElementById('webhookBody');
             tableBody.innerHTML = '';
+
             webhooks.forEach(webhook => {
                 const row = document.createElement('tr');
+
+                // Use JSON.stringify to render the JSON object in a readable format
                 row.innerHTML = `
-                    <td>${webhook.webhookType}</td>
-                    <td>${JSON.stringify(webhook.data)}</td>
-                    <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
-                `;
+          <td>${webhook.webhookType || 'No Type'}</td>
+          <td>${JSON.stringify(webhook.data, null, 2) || 'No Data'}</td>
+          <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
+      `;
                 tableBody.appendChild(row);
             });
         }
@@ -64,4 +89,5 @@
         fetchWebhooks();
     </script>
 </body>
+
 </html>
