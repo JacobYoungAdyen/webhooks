@@ -1,4 +1,3 @@
-
 async function fetchWebhooks() {
     const response = await fetch('/api/webhooks');
     const webhooks = await response.json();
@@ -13,23 +12,20 @@ function displayWebhooks(webhooks) {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-                    <td>${webhook.notificationItem.eventCode || 'No Type'}</td>
-
-                    <td>
-    <button onclick="toggleJSONDisplay(this)">Show Data</button>
-    <button class="copy-button" onclick="copyToClipboard(this)">Copy JSON</button>
-    <div class="json-container">${JSON.stringify(webhook.notificationItem, null, 2) || 'No Data'}</div>
-</td>
-
-
-                    <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
-                `;
+            <td>${webhook.notificationItem.eventCode || 'No Type'}</td>
+            <td>
+                <button onclick="toggleJSONDisplay(this)">Show Data</button>
+                <button class="copy-button" onclick="copyToClipboard(this)" style="margin-left: 10px;">Copy JSON</button>
+                <div class="json-container" style="display: none;">${JSON.stringify(webhook.notificationItem, null, 2) || 'No Data'}</div>
+            </td>
+            <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
+        `;
         tableBody.appendChild(row);
     });
 }
 
 function toggleJSONDisplay(button) {
-    const container = button.nextElementSibling;
+    const container = button.nextElementSibling.nextElementSibling; // Move to the json-container
     const isVisible = container.style.display === 'block';
 
     container.style.display = isVisible ? 'none' : 'block';
@@ -37,13 +33,12 @@ function toggleJSONDisplay(button) {
 }
 
 function copyToClipboard(button) {
-    const jsonContainer = button.nextElementSibling;
+    const jsonContainer = button.nextElementSibling.nextElementSibling; // Move to the json-container
     const jsonData = jsonContainer.innerText; // Get the text from the json-container
 
     // Use the Clipboard API to copy the text
     navigator.clipboard.writeText(jsonData)
         .then(() => {
-            // Provide feedback that the text has been copied
             button.textContent = 'Copied!';
             setTimeout(() => {
                 button.textContent = 'Copy JSON'; // Reset button text after a short period
@@ -52,28 +47,6 @@ function copyToClipboard(button) {
         .catch(err => {
             console.error('Failed to copy: ', err);
         });
-}
-
-
-function formatJSON(json) {
-    const jsonStr = JSON.stringify(json, null, 2);
-    return jsonStr.replace(
-        /"(.*?)"(\s*:\s*)?("(.*?)"|true|false|null|\d+(\.\d+)?)/g,
-        (match, key, separator, value) => {
-            let result = `<span class="key">"${key}"</span>${separator || ''}`;
-
-            if (/^".*"$/.test(value)) {
-                result += `<span class="string">${value}</span>`;
-            } else if (value === 'true' || value === 'false') {
-                result += `<span class="boolean">${value}</span>`;
-            } else if (value === 'null') {
-                result += `<span class="null">${value}</span>`;
-            } else {
-                result += `<span class="number">${value}</span>`;
-            }
-            return result;
-        }
-    );
 }
 
 async function filterWebhooks() {
