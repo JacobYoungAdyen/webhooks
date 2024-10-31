@@ -53,6 +53,38 @@
         </tbody>
     </table>
 
+    <style>
+  /* Basic styling for collapsible JSON data */
+  .json-container {
+    display: none;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+  .json-container span.key {
+    color: #d73a49;
+    font-weight: bold;
+  }
+  .json-container span.string {
+    color: #032f62;
+  }
+  .json-container span.number {
+    color: #005cc5;
+  }
+  .json-container span.boolean {
+    color: #d73a49;
+    font-weight: bold;
+  }
+  .json-container span.null {
+    color: #6a737d;
+    font-style: italic;
+  }
+</style>
+
     <script>
         async function fetchWebhooks() {
             const response = await fetch('/api/webhooks');
@@ -76,7 +108,7 @@
 
           <td>
   <button onclick="toggleJSONDisplay(this)">Show Data</button>
-  <pre style="display: none; white-space: pre-wrap;">${JSON.stringify(webhook.notificationItem, null, 2) || 'No Data'}</pre>
+  <div class="json-container">${JSON.stringify(webhook.notificationItem, null, 2) || 'No Data'}</div>
 </td>
 
           <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
@@ -102,6 +134,37 @@
             // Toggle display style and button text
             pre.style.display = isVisible ? 'none' : 'block';
             button.textContent = isVisible ? 'Show Data' : 'Hide Data';
+        }
+
+
+        function formatJSON(json) {
+            if (typeof json !== 'object') return '';
+            const jsonStr = JSON.stringify(json, null, 2);
+
+            return jsonStr.replace(
+                /"(.*?)"(\s*:\s*)?(?:(true|false|null|\d+(\.\d+)?))?/g,
+                (match, key, separator, value) => {
+                    if (separator) {
+                        // Key
+                        return `<span class="key">"${key}"</span>${separator}${formatValue(value)}`;
+                    }
+                    // String value
+                    return `<span class="string">"${key}"</span>`;
+                }
+            );
+        }
+
+        function formatValue(value) {
+            if (value === 'true' || value === 'false') {
+                return `<span class="boolean">${value}</span>`;
+            }
+            if (value === 'null') {
+                return `<span class="null">${value}</span>`;
+            }
+            if (!isNaN(value)) {
+                return `<span class="number">${value}</span>`;
+            }
+            return `<span class="string">"${value}"</span>`;
         }
 
 
