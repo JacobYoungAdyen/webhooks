@@ -35,7 +35,9 @@ function toggleJSONDisplay(button) {
 function copyToClipboard(button) {
     console.log(button)
     console.log(button.nextElementSibling)
-    const jsonContainer = button.nextElementSibling.nextElementSibling; // Select the json-container correctly
+    console.log("two nextElement stringed together", button.nextElementSibling.nextElementSibling)
+    const nextButton = button.nextElementSibling // Select the json-container correctly
+    const jsonContainer = nextButton.nextElementSibling
     console.log(jsonContainer)
     const jsonData = jsonContainer.textContent; // Get the text content from the json-container
 
