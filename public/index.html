@@ -57,6 +57,7 @@
         async function fetchWebhooks() {
             const response = await fetch('/api/webhooks');
             const webhooks = await response.json();
+            console.log("log webhooks to browser console", webhooks)
             displayWebhooks(webhooks);
         }
 
