@@ -60,7 +60,7 @@
             console.log(webhooks[0].notificationItem);
             console.log(webhooks[0].notificationItem.eventCode);
             displayWebhooks(webhooks);
-
+            
         }
 
         function displayWebhooks(webhooks) {
@@ -73,11 +73,14 @@
                 // Use JSON.stringify to render the JSON object in a readable format
                 row.innerHTML = `
           <td>${webhook.notificationItem.eventCode || 'No Type'}</td>
+          
+          <td>${JSON.stringify(webhook.data, null, 2) || 'No Data'}</td>
 
           <td>
   <button onclick="toggleJSONDisplay(this)">Show Data</button>
-  <pre style="display: none; white-space: pre-wrap;">${JSON.stringify(webhook.notificationItem, null, 2) || 'No Data'}</pre>
+  <pre style="display: none; white-space: pre-wrap;">${JSON.stringify(webhook.data, null, 2) || 'No Data'}</pre>
 </td>
+
 
           <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
       `;
@@ -93,17 +96,6 @@
             const filteredWebhooks = await response.json();
             displayWebhooks(filteredWebhooks);
         }
-
-
-        function toggleJSONDisplay(button) {
-            const pre = button.nextElementSibling;
-            const isVisible = pre.style.display === 'block';
-
-            // Toggle display style and button text
-            pre.style.display = isVisible ? 'none' : 'block';
-            button.textContent = isVisible ? 'Show Data' : 'Hide Data';
-        }
-
 
         fetchWebhooks();
     </script>
