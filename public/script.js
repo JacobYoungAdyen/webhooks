@@ -25,7 +25,7 @@ function displayWebhooks(webhooks) {
 }
 
 function toggleJSONDisplay(button) {
-    const container = button.nextElementSibling.nextElementSibling; // Move to the json-container
+    const container = button.nextElementSibling.nextElementSibling; // Select the json-container
     const isVisible = container.style.display === 'block';
 
     container.style.display = isVisible ? 'none' : 'block';
@@ -33,8 +33,8 @@ function toggleJSONDisplay(button) {
 }
 
 function copyToClipboard(button) {
-    const jsonContainer = button.nextElementSibling.nextElementSibling; // Move to the json-container
-    const jsonData = jsonContainer.innerText; // Get the text from the json-container
+    const jsonContainer = button.nextElementSibling.nextElementSibling; // Select the json-container correctly
+    const jsonData = jsonContainer.textContent; // Get the text content from the json-container
 
     // Use the Clipboard API to copy the text
     navigator.clipboard.writeText(jsonData)
