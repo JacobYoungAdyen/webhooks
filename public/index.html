@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +15,7 @@
             margin-top: 20px;
         }
 
-        th,
-        td {
+        th, td {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
@@ -31,9 +29,29 @@
             margin: 5px 0;
             padding: 5px;
         }
+
+        /* Styling for collapsible JSON data */
+        .json-container {
+            display: none;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        .json-container .key {
+            color: #39ff14; /* Bright green for keys */
+            font-weight: bold;
+        }
+
+        .json-container .string, .json-container .number, .json-container .boolean, .json-container .null {
+            color: #800020; /* Burgundy for values */
+        }
     </style>
 </head>
-
 <body>
     <h1>Webhook Viewer</h1>
     <label for="type">Filter by Type:</label>
@@ -49,46 +67,14 @@
                 <th>Received At</th>
             </tr>
         </thead>
-        <tbody id="webhookBody">
-        </tbody>
+        <tbody id="webhookBody"></tbody>
     </table>
-
-    <style>
-        /* Basic styling for collapsible JSON data */
-        .json-container {
-            display: none;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
-            white-space: pre-wrap;
-            font-family: monospace;
-        }
-
-        .json-container span.key {
-            color: #68ef50;
-            /* Bright green for keys */
-            font-weight: bold;
-        }
-
-        .json-container span.string,
-        .json-container span.number,
-        .json-container span.boolean,
-        .json-container span.null {
-            color: #800020;
-            /* Burgundy for values */
-        }
-    </style>
 
     <script>
         async function fetchWebhooks() {
             const response = await fetch('/api/webhooks');
             const webhooks = await response.json();
-            console.log(webhooks[0].notificationItem);
-            console.log(webhooks[0].notificationItem.eventCode);
             displayWebhooks(webhooks);
-
         }
 
         function displayWebhooks(webhooks) {
@@ -98,43 +84,24 @@
             webhooks.forEach(webhook => {
                 const row = document.createElement('tr');
 
-                // Use JSON.stringify to render the JSON object in a readable format
                 row.innerHTML = `
-          <td>${webhook.notificationItem.eventCode || 'No Type'}</td>
-
-          <td>
-  <button onclick="toggleJSONDisplay(this)">Show Data</button>
-  <div class="json-container">${JSON.stringify(webhook.notificationItem, null, 2) || 'No Data'}</div>
-</td>
-
-          <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
-      `;
+                    <td>${webhook.notificationItem.eventCode || 'No Type'}</td>
+                    <td>
+                        <button onclick="toggleJSONDisplay(this)">Show Data</button>
+                        <div class="json-container">${formatJSON(webhook.notificationItem)}</div>
+                    </td>
+                    <td>${new Date(webhook.receivedAt).toLocaleString()}</td>
+                `;
                 tableBody.appendChild(row);
             });
         }
 
-        async function filterWebhooks() {
-            const typeFilter = document.getElementById('type').value;
-            const dataFilter = document.getElementById('data').value;
-
-            const response = await fetch(`/api/webhooks?type=${typeFilter}&data=${dataFilter}`);
-            const filteredWebhooks = await response.json();
-            displayWebhooks(filteredWebhooks);
-        }
-
-
         function toggleJSONDisplay(button) {
-            const pre = button.nextElementSibling;
-            const isVisible = pre.style.display === 'block';
+            const container = button.nextElementSibling;
+            const isVisible = container.style.display === 'block';
 
-            // Toggle display style and button text
-            pre.style.display = isVisible ? 'none' : 'block';
+            container.style.display = isVisible ? 'none' : 'block';
             button.textContent = isVisible ? 'Show Data' : 'Hide Data';
-
-            // Inject formatted JSON only once when expanding for the first time
-            if (!isVisible && !container.innerHTML.trim()) {
-                container.innerHTML = formatJSON(webhook.data);
-            }
         }
 
         function formatJSON(json) {
@@ -142,10 +109,8 @@
             return jsonStr.replace(
                 /"(.*?)"(\s*:\s*)?("(.*?)"|true|false|null|\d+(\.\d+)?)/g,
                 (match, key, separator, value) => {
-                    // Highlight keys
                     let result = `<span class="key">"${key}"</span>${separator || ''}`;
-
-                    // Highlight values based on their type
+                    
                     if (/^".*"$/.test(value)) {
                         result += `<span class="string">${value}</span>`;
                     } else if (value === 'true' || value === 'false') {
@@ -160,8 +125,16 @@
             );
         }
 
+        async function filterWebhooks() {
+            const typeFilter = document.getElementById('type').value;
+            const dataFilter = document.getElementById('data').value;
+
+            const response = await fetch(`/api/webhooks?type=${typeFilter}&data=${dataFilter}`);
+            const filteredWebhooks = await response.json();
+            displayWebhooks(filteredWebhooks);
+        }
+
         fetchWebhooks();
     </script>
 </body>
-
 </html>
