@@ -137,37 +137,28 @@
             }
         }
 
-
         function formatJSON(json) {
-            if (typeof json !== 'object') return '';
             const jsonStr = JSON.stringify(json, null, 2);
-
             return jsonStr.replace(
-                /"(.*?)"(\s*:\s*)?(?:(true|false|null|\d+(\.\d+)?))?/g,
+                /"(.*?)"(\s*:\s*)?("(.*?)"|true|false|null|\d+(\.\d+)?)/g,
                 (match, key, separator, value) => {
-                    if (separator) {
-                        // Key
-                        return `<span class="key">"${key}"</span>${separator}${formatValue(value)}`;
+                    // Highlight keys
+                    let result = `<span class="key">"${key}"</span>${separator || ''}`;
+
+                    // Highlight values based on their type
+                    if (/^".*"$/.test(value)) {
+                        result += `<span class="string">${value}</span>`;
+                    } else if (value === 'true' || value === 'false') {
+                        result += `<span class="boolean">${value}</span>`;
+                    } else if (value === 'null') {
+                        result += `<span class="null">${value}</span>`;
+                    } else {
+                        result += `<span class="number">${value}</span>`;
                     }
-                    // String value
-                    return `<span class="string">"${key}"</span>`;
+                    return result;
                 }
             );
         }
-
-        function formatValue(value) {
-            if (value === 'true' || value === 'false') {
-                return `<span class="boolean">${value}</span>`;
-            }
-            if (value === 'null') {
-                return `<span class="null">${value}</span>`;
-            }
-            if (!isNaN(value)) {
-                return `<span class="number">${value}</span>`;
-            }
-            return `<span class="string">"${value}"</span>`;
-        }
-
 
         fetchWebhooks();
     </script>
