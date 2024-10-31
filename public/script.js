@@ -33,6 +33,7 @@ function toggleJSONDisplay(button) {
 }
 
 function copyToClipboard(button) {
+    console.log(button)
     const jsonContainer = button.nextElementSibling.nextElementSibling; // Select the json-container correctly
     console.log(jsonContainer)
     const jsonData = jsonContainer.textContent; // Get the text content from the json-container
