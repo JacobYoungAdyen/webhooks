@@ -54,41 +54,32 @@
     </table>
 
     <style>
-  /* Basic styling for collapsible JSON data */
-  .json-container {
-    display: none;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 4px;
-    white-space: pre-wrap;
-    font-family: monospace;
-  }
-  .json-container span.key {
-    color: #39ff14; /* Bright green for keys */
-    font-weight: bold;
-  }
+        /* Basic styling for collapsible JSON data */
+        .json-container {
+            display: none;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
 
-  .json-container span.string, .json-container span.number, .json-container span.boolean, .json-container span.null {
-    color: #800020; /* Burgundy for values */
-  }
-/* 
-  .json-container span.string {
-    color: #032f62;
-  }
-  .json-container span.number {
-    color: #005cc5;
-  }
-  .json-container span.boolean {
-    color: #d73a49;
-    font-weight: bold;
-  }
-  .json-container span.null {
-    color: #6a737d;
-    font-style: italic;
-  } */
-</style>
+        .json-container span.key {
+            color: #68ef50;
+            /* Bright green for keys */
+            font-weight: bold;
+        }
+
+        .json-container span.string,
+        .json-container span.number,
+        .json-container span.boolean,
+        .json-container span.null {
+            color: #800020;
+            /* Burgundy for values */
+        }
+    </style>
 
     <script>
         async function fetchWebhooks() {
@@ -139,6 +130,11 @@
             // Toggle display style and button text
             pre.style.display = isVisible ? 'none' : 'block';
             button.textContent = isVisible ? 'Show Data' : 'Hide Data';
+
+            // Inject formatted JSON only once when expanding for the first time
+            if (!isVisible && !container.innerHTML.trim()) {
+                container.innerHTML = formatJSON(webhook.data);
+            }
         }
 
 
