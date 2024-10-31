@@ -33,12 +33,8 @@ function toggleJSONDisplay(button) {
 }
 
 function copyToClipboard(button) {
-    console.log(button)
-    console.log(button.nextElementSibling)
-    console.log("two nextElement stringed together", button.nextElementSibling.nextElementSibling)
-    const nextButton = button.nextElementSibling // Select the json-container correctly
-    const jsonContainer = nextButton.nextElementSibling
-    console.log(jsonContainer)
+
+    const jsonContainer = button.nextElementSibling
     const jsonData = jsonContainer.textContent; // Get the text content from the json-container
 
     // Use the Clipboard API to copy the text
